@@ -492,6 +492,6 @@ U_BOOT_ENV_LOCATION(mmc) = {
 	.load		= env_mmc_load,
 #ifndef CONFIG_SPL_BUILD
 	.save		= env_save_ptr(env_mmc_save),
-	.erase		= ENV_ERASE_PTR(env_mmc_erase)
+	.erase		= NULL
 #endif
 };
