@@ -15,6 +15,7 @@
 #include <asm/cache.h>
 #include <asm/global_data.h>
 #include <asm/gpio.h>
+#include <asm/io.h>
 #include <fdt_support.h>
 #include <asm/arch/dram.h>
 #include <asm/arch/misc.h>
@@ -151,6 +152,11 @@ int board_late_init(void)
 	memset(serial, 0, 16);
 	snprintf(serial, 13, "%x", msm_board_serial());
 	env_set("serial#", serial);
+
+	/* Used to setup backlight GPIO correctly
+	 */
+	writel(0x2c0, 0x1062000);
+	writel(0x2,   0x1062004);
 	return 0;
 }
 
