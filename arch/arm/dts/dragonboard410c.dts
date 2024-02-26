@@ -7,6 +7,9 @@
 
 /dts-v1/;
 
+#define GCC_BLSP1_AHB_CLK				       54
+#define GCC_BLSP1_QUP4_I2C_APPS_CLK		               62
+
 #include "skeleton64.dtsi"
 #include <dt-bindings/gpio/gpio.h>
 
@@ -20,6 +23,7 @@
 
 	aliases {
 		usb0 = "/soc/ehci@78d9000";
+		i2c3 = &blsp1_i2c3;
 	};
 
 	memory {
@@ -73,12 +77,21 @@
 				drive-strength = <8>;
 				bias-disable;
 			};
+
+			blsp1_i2c3_default: blsp1-i2c3-default {
+				pins = "GPIO_14", "GPIO_15";
+				function = "blsp_i2c3";
+			};
 		};
+
 		clkc: qcom,gcc@1800000 {
 			compatible = "qcom,gcc-apq8016";
 			reg = <0x1800000 0x80000>;
 			#address-cells = <0x1>;
 			#size-cells = <0x0>;
+
+			#clock-cells = <1>;
+			#reset-cells = <1>;
 		};
 
 		serial@78b0000 {
@@ -168,6 +181,18 @@
 				compatible = "qcom,spmi-pmic";
 				reg = <0x1 0x1>;
 			};
+		};
+
+		blsp1_i2c3: i2c@78b8000 {
+			compatible = "qcom,i2c-qup-v2.2.1";
+			reg = <0x078b8000 0x600>;
+			clocks = <&clkc GCC_BLSP1_AHB_CLK>,
+				 <&clkc GCC_BLSP1_QUP4_I2C_APPS_CLK>;
+			clock-names = "iface", "core";
+			pinctrl-names = "default";
+			pinctrl-0 = <&blsp1_i2c3_default>;
+			#address-cells = <1>;
+			#size-cells = <0>;
 		};
 	};
 

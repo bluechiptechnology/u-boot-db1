@@ -18,6 +18,10 @@
 /* GPLL0 clock control registers */
 #define GPLL0_STATUS_ACTIVE BIT(17)
 
+#define BLSP1_QUP4_I2C_APPS_CMD_RCGR	(0x5000)
+#define BLSP1_QUP4_I2C_APPS_CFG_RCGR	(0x5004)
+#define BLSP1_QUP4_I2C_APPS_CBCR	(0x5020)
+
 static const struct bcr_regs sdc_regs[] = {
 	{
 	.cfg_rcgr = SDCC_CFG_RCGR(1),
@@ -112,7 +116,26 @@ ulong msm_set_rate(struct clk *clk, ulong rate)
 	}
 }
 
+static const struct bcr_regs blsp1_qup4_i2c_apps_regs = {
+	.cmd_rcgr = BLSP1_QUP4_I2C_APPS_CMD_RCGR,
+	.cfg_rcgr = BLSP1_QUP4_I2C_APPS_CFG_RCGR,
+	/* mnd_width = 0 */
+};
+
 int msm_enable(struct clk *clk)
 {
+	struct msm_clk_priv *priv = dev_get_priv(clk->dev);
+
+	switch(clk->id){
+	case 62:
+		clk_enable_cbc(priv->base + BLSP1_QUP4_I2C_APPS_CBCR);
+		clk_rcg_set_rate(priv->base, &blsp1_qup4_i2c_apps_regs, 0,
+				 CFG_CLK_SRC_CXO);
+		break;
+	case 54:
+		clk_enable_vote_clk(priv->base, &gcc_blsp1_ahb_clk);
+		break;
+	}
+
 	return 0;
 }

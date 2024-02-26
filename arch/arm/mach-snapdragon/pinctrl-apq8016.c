@@ -28,7 +28,9 @@ static const char * const msm_pinctrl_pins[] = {
 
 static const struct pinctrl_function msm_pinctrl_functions[] = {
 	{"blsp1_uart", 2},
+	{"blsp_i2c3", 2},
 };
+
 
 static const char *apq8016_get_function_name(struct udevice *dev,
 					     unsigned int selector)
