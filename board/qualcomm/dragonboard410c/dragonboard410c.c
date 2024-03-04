@@ -173,25 +173,6 @@ int ft_board_setup(void *blob, struct bd_info *bd)
 
 	msm_fixup_memory(blob);
 
-	if (!eth_env_get_enetaddr("wlanaddr", mac)) {
-		msm_generate_mac_addr(mac);
-	};
-
-	do_fixup_by_compat(blob, "qcom,wcnss-wlan",
-			   "local-mac-address", mac, ARP_HLEN, 1);
-
-
-	if (!eth_env_get_enetaddr("btaddr", mac)) {
-		msm_generate_mac_addr(mac);
-
-/* The BD address is same as WLAN MAC address but with
- * least significant bit flipped.
- */
-		mac[0] ^= 0x01;
-	};
-
-	do_fixup_by_compat(blob, "qcom,wcnss-bt",
-			   "local-bd-address", mac, ARP_HLEN, 1);
 	return 0;
 }
 
